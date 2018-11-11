@@ -63,7 +63,6 @@ public class View {
     }
     private class ParseScanner extends Thread{
         private BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-        @SuppressWarnings("InfiniteLoopStatement")
         public void run(){
             try {
                 String input;
