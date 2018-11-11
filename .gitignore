@@ -1,5 +1,5 @@
 HM1/.idea
-HM/out
+HM1/out/production/HM1/
 HM1.iml
 HM1/iml
 HM1/HM1.iml
@@ -7,7 +7,7 @@ HM1/HM1.iml
 .gitignore
 
 HM2/.idea
-HM/out
+HM2/out/production/HM1/
 HM2.iml
 HM2/iml
 HM2/HM1.iml
