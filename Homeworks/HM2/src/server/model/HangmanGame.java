@@ -41,7 +41,7 @@ public class HangmanGame{
         while (scan2.hasNextLine()) {
             numberOfWords++;
             String chosenWord = scan2.next();
-            //Choosing a word, it must have a length longer than 3
+            //Choosing a word, it must have a length longer than three
             if (numberOfWords >= result && chosenWord.length() > 3) {
                 word = chosenWord.toLowerCase();
                 String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
