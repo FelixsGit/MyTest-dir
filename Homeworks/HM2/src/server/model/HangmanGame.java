@@ -30,8 +30,6 @@ public class HangmanGame{
 
     public MessageDTO newGame() throws FileNotFoundException {
         int numberOfWords = 0;
-        Scanner scan1 = new Scanner(f);
-        scan1.useDelimiter("[^A-Za-z]");
         Random r = new Random();
         int low = 0;
         int high = 51528;
