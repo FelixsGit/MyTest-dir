@@ -42,7 +42,7 @@ public class HangmanGame{
             numberOfWords++;
             String chosenWord = scan2.next();
             if (numberOfWords >= result && chosenWord.length() > 3) {
-                word = scan2.next().toLowerCase();
+                word = chosenWord.toLowerCase();
                 String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
                 logs.appendEntry(timeStamp+": user @"+username+" started a game with the word '"+word+"'.\n");
                 break;
