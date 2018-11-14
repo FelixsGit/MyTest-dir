@@ -1,78 +1,76 @@
 package client.net;
 
-import common.Message;
-import common.MessageDTO;
-import common.MessageException;
-import java.io.*;
+import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.Socket;
+import java.nio.ByteBuffer;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.nio.channels.SocketChannel;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
-import static common.MsgType.QUIT;
+public class ServerConnection extends Thread {
 
-public class ServerConnection {
-    private static final int TIMEOUT_HALF_HOUR = 1800000;
-    private static final int TIMEOUT_HALF_MINUTE = 30000;
-    private Socket socket;
-    private ObjectOutputStream toServer;
-    private ObjectInputStream fromServer;
-    private boolean connected;
-    private String host = "localhost";
-    private int port = 9999;
+    private CommunicationListener listener;
+    private InetSocketAddress serverAddress;
+    private SocketChannel socketChannel;
+    private Selector selector;
+    private final Queue<ByteBuffer> messagesToSend = new ArrayDeque<>();
+    private boolean connected = false;
 
-    @SuppressWarnings("InfiniteLoopStatement")
-    public void connect(OutputHandler outputHandler) throws IOException {
-        socket = new Socket();
-        socket.connect(new InetSocketAddress(host, port), TIMEOUT_HALF_MINUTE);
-        socket.setSoTimeout(TIMEOUT_HALF_HOUR);
-        connected = true;
-        toServer = new ObjectOutputStream(socket.getOutputStream());
-        fromServer = new ObjectInputStream(socket.getInputStream());
-        Listener listener = new Listener(outputHandler, this);
-        listener.start();
+    public void addCommunicationListener(CommunicationListener listener) {
+        this.listener = listener;
     }
-
-    public void sendMsg(Message msg)throws IOException{
-        toServer.writeObject(msg);
-        toServer.flush();
-        toServer.reset();
-
+    public void connect(String host, int port) {
+        serverAddress = new InetSocketAddress(host, port);
+        this.start();
     }
-    public void disconnect() throws IOException {
-        sendMsg(new Message(QUIT,null));
+    private void completeConnection(SelectionKey key) throws IOException{
+        socketChannel.finishConnect();
+        key.interestOps(SelectionKey.OP_READ);
         try {
-            socket.close();
-            socket = null;
-            connected = false;
-        }catch (NullPointerException e){
-            System.err.println("Thanks for playing");
+            InetSocketAddress remoteAddress = (InetSocketAddress) socketChannel.getRemoteAddress();
+            listener.connected(remoteAddress);
+        } catch (IOException couldNotGetRemAddrUsingDefaultInstead) {
+            listener.connected(serverAddress);
         }
-
     }
-    @SuppressWarnings("InfiniteLoopStatement")
-    private class Listener extends Thread{
-
-        private final OutputHandler outputHandler;
-        private ServerConnection serverConnection;
-
-        public Listener(OutputHandler outputHandler, ServerConnection serverConnection){
-            this.outputHandler = outputHandler;
-            this.serverConnection = serverConnection;
-        }
-
-
-        public void run(){
-            try{
-                for(;;) {
-                    outputHandler.handleMessage((MessageDTO)fromServer.readObject());
+    private void initConnection() throws IOException {
+        socketChannel = SocketChannel.open();
+        socketChannel.configureBlocking(false);
+        socketChannel.connect(serverAddress);
+        connected = true;
+    }
+    private void initSelector() throws IOException{
+        selector = Selector.open();
+        socketChannel.register(selector, SelectionKey.OP_CONNECT);
+    }
+    public void run() {
+        try {
+            initConnection();
+            initSelector();
+            while (connected || !messagesToSend.isEmpty()) {
+                selector.select();
+                for (SelectionKey key : selector.selectedKeys()) {
+                    selector.selectedKeys().remove(key);
+                    if (!key.isValid()) {
+                        continue;
+                    }
+                    if (key.isConnectable()) {
+                        completeConnection(key);
+                        System.out.println("connection completed");
+                    }
+                    /*else if (key.isReadable()) {
+                        recvFromServer(key);
+                    } else if (key.isWritable()) {
+                        sendToServer(key);
+                    }
+                    */
                 }
-            }catch (Throwable connectionFailure){
-                if(connected){
-                    System.err.println("Server connection failed");
-                    outputHandler.handleMessage(null);
-                }
-
             }
+        } catch (Exception e) {
+            System.err.println("lost connection");
         }
-
+      //try to disconnect and by sending disconnect to server, catch it if it don't work
     }
 }
