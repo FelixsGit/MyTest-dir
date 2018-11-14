@@ -64,6 +64,7 @@ public class HangmanGame{
         return this.messageDTO;
     }
     public void changeUsername(String username){
+
         this.username = username;
     }
     public String getUsername()throws NullPointerException{

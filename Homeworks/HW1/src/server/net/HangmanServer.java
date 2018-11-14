@@ -7,13 +7,13 @@ public class HangmanServer {
 
     private static final int LINGER_TIME = 5000;
     private static final int TIMEOUT_HALF_HOUR = 1800000;
-    private int portNo = 9898;
+    private int portNo = 9999;
 
     public static void main(String[] args) throws Exception {
         HangmanServer server = new HangmanServer();
         server.serve();
     }
-
+    @SuppressWarnings("InfiniteLoopStatement")
     private void serve() {
         try {
             ServerSocket listeningSocket = new ServerSocket(portNo);

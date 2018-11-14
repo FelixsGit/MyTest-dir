@@ -17,7 +17,7 @@ public class ServerConnection {
     private ObjectInputStream fromServer;
     private boolean connected;
     private String host = "localhost";
-    private int port = 9898;
+    private int port = 9999;
 
     @SuppressWarnings("InfiniteLoopStatement")
     public void connect(OutputHandler outputHandler) throws IOException {

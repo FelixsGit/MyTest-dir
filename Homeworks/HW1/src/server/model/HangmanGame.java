@@ -30,8 +30,6 @@ public class HangmanGame{
 
     public MessageDTO newGame() throws FileNotFoundException {
         int numberOfWords = 0;
-        Scanner scan1 = new Scanner(f);
-        scan1.useDelimiter("[^A-Za-z]");
         Random r = new Random();
         int low = 0;
         int high = 51528;
@@ -41,8 +39,9 @@ public class HangmanGame{
         while (scan2.hasNextLine()) {
             numberOfWords++;
             String chosenWord = scan2.next();
+            //Choosing a word, it must have a length longer than 3
             if (numberOfWords >= result && chosenWord.length() > 3) {
-                word = scan2.next().toLowerCase();
+                word = chosenWord.toLowerCase();
                 String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
                 logs.appendEntry(timeStamp+": user @"+username+" started a game with the word '"+word+"'.\n");
                 break;
@@ -65,6 +64,7 @@ public class HangmanGame{
         return this.messageDTO;
     }
     public void changeUsername(String username){
+
         this.username = username;
     }
     public String getUsername()throws NullPointerException{
