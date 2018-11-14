@@ -1,6 +1,6 @@
 package server.net;
 
-import server.Controller.Controller;
+import common.MessageDTO;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -14,11 +14,10 @@ import java.util.Iterator;
 public class HangmanServer {
 
     private static final int LINGER_TIME = 5000;
-    private static final int TIMEOUT_HALF_HOUR = 1800000;
     private static final int port = 9999;
     private Selector selector;
     private ServerSocketChannel listeningSocketChannel;
-    private Controller controller = new Controller();
+    private MessageDTO gameState;
 
     private void initSelector() throws IOException {
         selector = Selector.open();
@@ -34,19 +33,50 @@ public class HangmanServer {
         SocketChannel clientChannel = serverSocketChannel.accept();
         clientChannel.configureBlocking(false);
         ClientHandler handler = new ClientHandler(this, clientChannel);
-        clientChannel.register(selector, SelectionKey.OP_WRITE, new Client(handler, controller.getUsername()));
-        clientChannel.setOption(StandardSocketOptions.SO_LINGER, LINGER_TIME); //Close will probably
+        clientChannel.register(selector, SelectionKey.OP_READ, new Client(handler));
+        clientChannel.setOption(StandardSocketOptions.SO_LINGER, LINGER_TIME);
+    }
+    private void getMsgFromClient(SelectionKey key) throws IOException{
+        Client client = (Client) key.attachment();
+        try {
+            client.handler.receiveMsg();
+            key.interestOps(SelectionKey.OP_WRITE);
+        } catch (IOException clientHasClosedConnection) {
+            removeClient(key);
+        }
+    }
+    public void sendGameStateToClient(MessageDTO gameState){
+        this.gameState = gameState;
+        selector.wakeup();
+    }
+
+    private void sendToClient(SelectionKey key) throws IOException {
+        Client client = (Client) key.attachment();
+        try {
+            client.sendMsg(gameState);
+            gameState = null;
+            key.interestOps(SelectionKey.OP_READ);
+
+        } catch (IOException clientHasClosedConnection) {
+            removeClient(key);
+        }
+    }
+
+    private void removeClient(SelectionKey clientKey) throws IOException {
+        Client client = (Client) clientKey.attachment();
+        client.handler.disconnectClient();
+        clientKey.cancel();
     }
 
     @SuppressWarnings("InfiniteLoopStatement")
-    private void serve() throws IOException{
+    private void serve(){
         try{
             initSelector();
             initListeningSocketChannel();
-            while(true){
+            while (true) {
                 selector.select();
                 Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
-                while(iterator.hasNext()){
+                while (iterator.hasNext()) {
                     SelectionKey key = iterator.next();
                     iterator.remove();
                     if (!key.isValid()) {
@@ -54,19 +84,31 @@ public class HangmanServer {
                     }
                     if (key.isAcceptable()) {
                         startHandler(key);
+                    } else if (key.isReadable()) {
+                        getMsgFromClient(key);
+                    } else if (key.isWritable() && gameState != null) {
+                        sendToClient(key);
                     }
                 }
             }
         }catch (IOException e){
-            //send some error
+            System.err.println("Sever failure");
         }
     }
     private class Client{
-        public Client(ClientHandler handler, String gameData){
 
+        private ClientHandler handler;
+
+        Client(ClientHandler handler){
+            this.handler = handler;
         }
+
+        public void sendMsg(MessageDTO gameState) throws IOException{
+            handler.finalSend(gameState);
+        }
+
     }
-    public static void main(String args[]) throws IOException{
+    public static void main(String args[]){
         HangmanServer hangmanServer = new HangmanServer();
         hangmanServer.serve();
     }

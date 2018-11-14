@@ -1,13 +1,14 @@
 package client.net;
 
-import java.io.IOException;
+import common.Message;
+import common.MessageDTO;
+import java.io.*;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
-import java.util.ArrayDeque;
-import java.util.Queue;
+import java.util.Iterator;
 
 public class ServerConnection extends Thread {
 
@@ -15,8 +16,9 @@ public class ServerConnection extends Thread {
     private InetSocketAddress serverAddress;
     private SocketChannel socketChannel;
     private Selector selector;
-    private final Queue<ByteBuffer> messagesToSend = new ArrayDeque<>();
     private boolean connected = false;
+    private boolean timeToSend = false;
+    private Message msg;
 
     public void addCommunicationListener(CommunicationListener listener) {
         this.listener = listener;
@@ -31,7 +33,8 @@ public class ServerConnection extends Thread {
         try {
             InetSocketAddress remoteAddress = (InetSocketAddress) socketChannel.getRemoteAddress();
             listener.connected(remoteAddress);
-        } catch (IOException couldNotGetRemAddrUsingDefaultInstead) {
+            key.interestOps(SelectionKey.OP_WRITE);
+        } catch (IOException couldNotGetRemAdrUsingDefaultInstead) {
             listener.connected(serverAddress);
         }
     }
@@ -45,27 +48,58 @@ public class ServerConnection extends Thread {
         selector = Selector.open();
         socketChannel.register(selector, SelectionKey.OP_CONNECT);
     }
+    private void sendToServer(SelectionKey key) throws IOException{
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+        objectOutputStream.writeObject(msg);
+        objectOutputStream.reset();
+        objectOutputStream.flush();
+        msg = null;
+        socketChannel.write(ByteBuffer.wrap(byteArrayOutputStream.toByteArray()));
+        byteArrayOutputStream.reset();
+        byteArrayOutputStream.flush();
+        timeToSend = true;
+        key.interestOps(SelectionKey.OP_READ);
+        selector.wakeup();
+    }
+    public void setMessage(Message msg){
+        this.msg = msg;
+    }
+
+    private void receiveMsg(SelectionKey key) throws IOException{
+        ByteBuffer msgFromClient = ByteBuffer.allocate(8192);
+        socketChannel.read(msgFromClient);
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(msgFromClient.array());
+        ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+        try{
+            MessageDTO gameState = (MessageDTO)objectInputStream.readObject();
+            listener.sendGameStateToView(gameState);
+            key.interestOps(SelectionKey.OP_WRITE);
+        }catch (ClassNotFoundException e){
+            //some error
+        }
+    }
+
     public void run() {
         try {
             initConnection();
             initSelector();
-            while (connected || !messagesToSend.isEmpty()) {
+            while (true) {
                 selector.select();
-                for (SelectionKey key : selector.selectedKeys()) {
-                    selector.selectedKeys().remove(key);
+                Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
+                while(iterator.hasNext()){
+                    SelectionKey key = iterator.next();
+                    iterator.remove();
                     if (!key.isValid()) {
                         continue;
                     }
-                    if (key.isConnectable()) {
+                    if(key.isConnectable()){
                         completeConnection(key);
-                        System.out.println("connection completed");
-                    }
-                    /*else if (key.isReadable()) {
-                        recvFromServer(key);
-                    } else if (key.isWritable()) {
+                    }else if (key.isWritable() && (msg != null)) {
                         sendToServer(key);
+                    }else if(key.isReadable()){
+                        receiveMsg(key);
                     }
-                    */
                 }
             }
         } catch (Exception e) {

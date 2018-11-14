@@ -6,7 +6,7 @@ public class Main {
     public static void main(String args[]){
         View view = new View();
         try{
-            view.establishConnection();
+            view.play();
         }
         catch (Exception e) {
             System.out.println("connection Failed");
