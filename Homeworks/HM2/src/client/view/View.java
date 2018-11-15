@@ -75,7 +75,6 @@ public class View {
      */
     private class ConsoleOutput implements CommunicationListener {
 
-
         /**
          * Tells the user the connection with the server has been established
          * @param serverAddress InetSocketAddress to the server

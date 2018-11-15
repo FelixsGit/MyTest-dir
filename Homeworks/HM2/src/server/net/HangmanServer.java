@@ -1,7 +1,6 @@
 package server.net;
 
 import common.MessageDTO;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.StandardSocketOptions;

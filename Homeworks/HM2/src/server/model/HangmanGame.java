@@ -1,7 +1,6 @@
 package server.model;
 
 import common.MessageDTO;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
