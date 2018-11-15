@@ -13,6 +13,9 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.concurrent.ForkJoinPool;
 
+/**
+ * This class is responsible for the communication with each client
+ */
 public class ClientHandler implements Runnable{
 
     private HangmanServer hangmanServer;
@@ -26,6 +29,9 @@ public class ClientHandler implements Runnable{
         this.hangmanServer = hangmanServer;
     }
 
+    /**
+     * Loops and listens for incoming messages
+     */
     public void run(){
         while (!incomingMessageList.isEmpty()) {
             try {
@@ -59,6 +65,12 @@ public class ClientHandler implements Runnable{
             }
         }
     }
+
+    /**
+     * Receives a Message object from the client and adds it to be handled by
+     * a thread concurrent thread poll.
+     * @throws IOException exception
+     */
     void receiveMsg() throws IOException{
         ByteBuffer msgFromClient = ByteBuffer.allocate(8192);
         clientChannel.read(msgFromClient);
@@ -73,6 +85,11 @@ public class ClientHandler implements Runnable{
         }
     }
 
+    /**
+     * Sends the param to the client
+     * @param gameState MessageDTO (game state object)
+     * @throws IOException exception
+     */
     void finalSend(MessageDTO gameState) throws IOException{
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
@@ -84,7 +101,10 @@ public class ClientHandler implements Runnable{
         byteArrayOutputStream.flush();
     }
 
-     void disconnectClient(){
+    /**
+     * Closes the client channel ending the service of the connected client
+     */
+    void disconnectClient(){
         try {
             clientChannel.close();
         }catch (IOException e){

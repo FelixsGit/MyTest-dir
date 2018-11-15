@@ -2,6 +2,10 @@ package common;
 
 import java.io.Serializable;
 
+/**
+ * A DTO that is the Message Object the client are sending to the server
+ */
+
 public class Message implements Serializable {
 
     private final MsgType type;

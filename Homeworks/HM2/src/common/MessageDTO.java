@@ -2,6 +2,10 @@ package common;
 
 import java.io.Serializable;
 
+/**
+ * A DTO that is the game state object that the server are sending to the client
+ */
+
 public class MessageDTO implements Serializable{
 
     private String progressUI;

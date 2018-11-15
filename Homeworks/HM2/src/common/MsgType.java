@@ -1,10 +1,11 @@
 package common;
 
+/**
+ * Different types of messages the user can send.
+ * Integrated in the Message object
+ */
 public enum MsgType {
 
-    /*
-    From client
-     */
     USERNAME,
     GUESS,
     QUIT,

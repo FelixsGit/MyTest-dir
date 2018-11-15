@@ -10,6 +10,10 @@ import java.util.Random;
 import java.util.Scanner;
 
 
+/**
+ * This class contains the state of the game for one specific user.
+ */
+
 public class HangmanGame {
 
     private String word;

@@ -69,22 +69,36 @@ public class View {
     }
 
     /**
-     * This class receives messages from the server
+     * This class receives messages from the server using the observer-pattern with the
+     * implemented interface
      */
     private class ConsoleOutput implements CommunicationListener {
 
 
+        /**
+         * Tells the user the connection with the server has been established
+         * @param serverAddress InetSocketAddress to the server
+         */
         @Override
         public void connected(InetSocketAddress serverAddress) {
             connected = true;
             System.out.println("connected to "+ serverAddress);
             System.out.println("Please enter your username on format: username 'x' ");
         }
+
+        /**
+         * When user types quit, this method will be called and it
+         * sets boolean values so that the program will terminate.
+         */
         public void disconnect(){
             receivingUserInput = false;
             connected = false;
         }
 
+        /**
+         * Displays the game state to the user with the param
+         * @param gameState MessageDTO (the state of the game)
+         */
         public void sendGameStateToView(MessageDTO gameState){
             if(gameState == null){
                 serverError = true;
