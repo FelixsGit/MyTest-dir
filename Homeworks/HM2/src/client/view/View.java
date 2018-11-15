@@ -8,9 +8,7 @@ import common.MessageDTO;
 import java.net.InetSocketAddress;
 import java.util.Scanner;
 
-import static common.MsgType.GUESS;
-import static common.MsgType.RESTART;
-import static common.MsgType.USERNAME;
+import static common.MsgType.*;
 
 public class View {
 
@@ -58,6 +56,10 @@ public class View {
                         server.setMessage(new Message(GUESS,part2));
                     }else if(part1.equals("restart") && started){
                         server.setMessage(new Message(RESTART,null));
+                    }else if(part1.equals("quit") && started){
+                        server.setMessage(new Message(QUIT,null));
+                    }else{
+                        System.err.println("wrong input format");
                     }
                 }catch (Exception e){
                     System.err.println("something wrong with input");
@@ -76,6 +78,10 @@ public class View {
             connected = true;
             System.out.println("connected to "+ serverAddress);
             System.out.println("Please enter your username on format: username 'x' ");
+        }
+        public void disconnect(){
+            receivingUserInput = false;
+            connected = false;
         }
 
         public void sendGameStateToView(MessageDTO gameState){

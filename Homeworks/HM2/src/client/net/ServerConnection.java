@@ -10,6 +10,8 @@ import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 
+import static common.MsgType.QUIT;
+
 public class ServerConnection extends Thread {
 
     private CommunicationListener listener;
@@ -64,6 +66,9 @@ public class ServerConnection extends Thread {
     }
     public void setMessage(Message msg){
         this.msg = msg;
+        if(msg.getType() == QUIT){
+            listener.disconnect();
+        }
     }
 
     private void receiveMsg(SelectionKey key) throws IOException{
@@ -79,7 +84,7 @@ public class ServerConnection extends Thread {
             //some error
         }
     }
-
+    @SuppressWarnings("InfiniteLoopStatement")
     public void run() {
         try {
             initConnection();

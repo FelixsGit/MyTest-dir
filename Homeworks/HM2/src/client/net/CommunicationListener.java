@@ -10,4 +10,6 @@ public interface CommunicationListener {
 
     void sendGameStateToView(MessageDTO gameState);
 
+    void disconnect();
+
 }
