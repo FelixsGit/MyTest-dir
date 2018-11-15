@@ -18,8 +18,6 @@ public class ServerConnection extends Thread {
     private InetSocketAddress serverAddress;
     private SocketChannel socketChannel;
     private Selector selector;
-    private boolean connected = false;
-    private boolean timeToSend = false;
     private Message msg;
 
     public void addCommunicationListener(CommunicationListener listener) {
@@ -44,7 +42,6 @@ public class ServerConnection extends Thread {
         socketChannel = SocketChannel.open();
         socketChannel.configureBlocking(false);
         socketChannel.connect(serverAddress);
-        connected = true;
     }
     private void initSelector() throws IOException{
         selector = Selector.open();
@@ -60,7 +57,6 @@ public class ServerConnection extends Thread {
         socketChannel.write(ByteBuffer.wrap(byteArrayOutputStream.toByteArray()));
         byteArrayOutputStream.reset();
         byteArrayOutputStream.flush();
-        timeToSend = true;
         key.interestOps(SelectionKey.OP_READ);
         selector.wakeup();
     }
@@ -108,7 +104,7 @@ public class ServerConnection extends Thread {
                 }
             }
         } catch (Exception e) {
-            System.err.println("lost connection");
+            System.err.println("no connection to server");
         }
       //try to disconnect and by sending disconnect to server, catch it if it don't work
     }

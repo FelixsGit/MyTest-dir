@@ -127,6 +127,9 @@ public class HangmanGame {
             }
 
         }
+        if(messageDTO.getScore() < 0){
+            messageDTO.setScore(0);
+        }
         score = messageDTO.getScore();
         messageDTO.setTriesLeft(numberOfTriesLeft);
         messageDTO.setGuessesMade(uniqueGuesses);

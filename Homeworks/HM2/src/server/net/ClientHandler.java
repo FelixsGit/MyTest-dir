@@ -9,7 +9,6 @@ import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.concurrent.ForkJoinPool;
@@ -22,7 +21,7 @@ public class ClientHandler implements Runnable{
     private LinkedList<Message> incomingMessageList = new LinkedList<>();
     private ServerLogs logs = new ServerLogs();
 
-    public ClientHandler(HangmanServer hangmanServer, SocketChannel clientChannel){
+    ClientHandler(HangmanServer hangmanServer, SocketChannel clientChannel){
         this.clientChannel = clientChannel;
         this.hangmanServer = hangmanServer;
     }
@@ -85,9 +84,7 @@ public class ClientHandler implements Runnable{
         byteArrayOutputStream.flush();
     }
 
-
-
-    public void disconnectClient(){
+     void disconnectClient(){
         try {
             clientChannel.close();
         }catch (IOException e){

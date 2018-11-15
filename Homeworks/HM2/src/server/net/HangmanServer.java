@@ -16,13 +16,13 @@ public class HangmanServer {
     private static final int LINGER_TIME = 5000;
     private static final int port = 9999;
     private Selector selector;
-    private ServerSocketChannel listeningSocketChannel;
     private MessageDTO gameState;
 
     private void initSelector() throws IOException {
         selector = Selector.open();
     }
     private void initListeningSocketChannel() throws IOException{
+        ServerSocketChannel listeningSocketChannel;
         listeningSocketChannel = ServerSocketChannel.open();
         listeningSocketChannel.configureBlocking(false);
         listeningSocketChannel.bind(new InetSocketAddress(port));
@@ -45,7 +45,7 @@ public class HangmanServer {
             removeClient(key);
         }
     }
-    public void sendGameStateToClient(MessageDTO gameState){
+    void sendGameStateToClient(MessageDTO gameState){
         this.gameState = gameState;
         selector.wakeup();
     }
@@ -103,7 +103,7 @@ public class HangmanServer {
             this.handler = handler;
         }
 
-        public void sendMsg(MessageDTO gameState) throws IOException{
+        void sendMsg(MessageDTO gameState) throws IOException{
             handler.finalSend(gameState);
         }
 

@@ -12,14 +12,14 @@ import static common.MsgType.*;
 
 public class View {
 
-    ServerConnection server;
+    private ServerConnection server;
     private static final int port = 9999;
     private static final String host = "localhost";
     private boolean receivingUserInput = false;
     private Scanner scan = new Scanner(System.in);
+    private boolean started = false;
     private boolean connected = false;
     private boolean serverError = false;
-    private boolean started = false;
 
     /**
      * This method connects to the server and starts the ParseScanner thread
@@ -72,6 +72,7 @@ public class View {
      * This class receives messages from the server
      */
     private class ConsoleOutput implements CommunicationListener {
+
 
         @Override
         public void connected(InetSocketAddress serverAddress) {
