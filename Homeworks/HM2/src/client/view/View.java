@@ -4,10 +4,8 @@ import client.net.CommunicationListener;
 import client.net.ServerConnection;
 import common.Message;
 import common.MessageDTO;
-
 import java.net.InetSocketAddress;
 import java.util.Scanner;
-
 import static common.MsgType.*;
 
 public class View {
@@ -20,6 +18,7 @@ public class View {
     private boolean started = false;
     private boolean connected = false;
     private boolean serverError = false;
+    private boolean continueState = false;
 
     /**
      * This method connects to the server and starts the ParseScanner thread
@@ -48,15 +47,17 @@ public class View {
                     input = scan.nextLine();
                     String[] parts = input.split(" ");
                     String part1 = parts[0];
-                    if(part1.equals("username")) {
+                    if(part1.equals("username") && !continueState) {
                         String part2 = parts[1];
                         server.setMessage(new Message(USERNAME,part2));
-                    }else if(part1.equals("guess") && started){
+                    }else if(part1.equals("guess") && started && !continueState){
                         String part2 = parts[1];
                         server.setMessage(new Message(GUESS,part2));
                     }else if(part1.equals("restart") && started){
+                        continueState = false;
                         server.setMessage(new Message(RESTART,null));
                     }else if(part1.equals("quit") && started){
+                        continueState = false;
                         server.setMessage(new Message(QUIT,null));
                     }else{
                         System.err.println("wrong input format");
@@ -96,7 +97,8 @@ public class View {
         }
 
         /**
-         * Displays the game state to the user with the param
+         * Displays the game state to the user with the param and updates some
+         * states that controls which input the user is allowed to make.
          * @param gameState MessageDTO (the state of the game)
          */
         public void sendGameStateToView(MessageDTO gameState){
@@ -120,12 +122,14 @@ public class View {
                 System.out.println();
                 System.out.println("You got "+gameState.getTriesLeft()+ " tries left" );
             }else if(gameState.getGameStatus().equals("won")){
+                continueState = true;
                 System.out.println();
                 System.out.println("You won!");
                 System.out.println(gameState.getCorrectUI());
                 System.out.println("Your score are now: "+gameState.getScore());
                 System.out.println("To play again type: restart\nTo disconnect type: quit");
             }else if(gameState.getGameStatus().equals("lost")) {
+                continueState = true;
                 System.out.println();
                 System.out.println("You lost!");
                 System.out.println("The correct word was: " + gameState.getCorrectUI());

@@ -1,7 +1,6 @@
 package client.net;
 
 import common.MessageDTO;
-
 import java.net.InetSocketAddress;
 
 /**
