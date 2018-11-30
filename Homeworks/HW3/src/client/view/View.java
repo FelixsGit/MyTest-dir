@@ -21,7 +21,7 @@ public class View implements Runnable{
             String userMsg = scan.nextLine();
             switch(userMsg){
                 case "new":
-                    catalog.createNewUser("Felix", "123");
+                    catalog.createNewAccount("Felix", "123");
             }
         }
     }
