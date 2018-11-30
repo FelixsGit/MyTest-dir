@@ -9,7 +9,6 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
-
 import static common.MsgType.QUIT;
 
 public class ServerConnection extends Thread {
