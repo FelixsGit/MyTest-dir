@@ -1,6 +1,7 @@
 package server.controller;
 
 import common.Catalog;
+import common.FileDTO;
 import common.MsgContainerDTO;
 import server.integration.CatalogDAO;
 import server.model.Account;
@@ -32,6 +33,10 @@ public class Controller extends UnicastRemoteObject implements Catalog {
 
     public synchronized  MsgContainerDTO uploadFile(String name, int size, int id, int permission){
         return catalogDAO.uploadFile(new File(name, size, id, permission));
+    }
+
+    public synchronized FileDTO downloadFileWithID(int id){
+        return catalogDAO.downloadFileWithID(id);
     }
 
     public synchronized  MsgContainerDTO getAllFiles(){

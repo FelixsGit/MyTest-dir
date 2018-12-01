@@ -1,6 +1,7 @@
 package server.integration;
 
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
+import common.FileDTO;
 import common.MsgContainerDTO;
 import server.model.Account;
 import server.model.File;
@@ -16,9 +17,10 @@ public class CatalogDAO {
     private PreparedStatement createPersonStmt;
     private PreparedStatement findAllPersonsStmt;
     private PreparedStatement verifyUserStmt;
-    private PreparedStatement uploadFileStmt;
     private PreparedStatement findAllFiles;
     private PreparedStatement getUserFromIDStmt;
+    private PreparedStatement getFileWithIDStmt;
+    private PreparedStatement getIDFromUserStmt;
     private ArrayList<String> data = new ArrayList<>();
     private HashMap<Integer, String> userMap = new HashMap<>();
 
@@ -113,13 +115,6 @@ public class CatalogDAO {
             int size = file.getSize();
             String owner = getUserFromID(file.getOwner());
             int permission = file.writePermission();
-            /*
-            createFileStmt.setString(1,name);
-            createFileStmt.setInt(2, size);
-            createFileStmt.setInt(3, owner);
-            createFileStmt.setInt(4, permission);
-            createPersonStmt.executeUpdate();
-            */
             Statement stmt = connection.createStatement();
             String sql = "INSERT INTO " + FILE_TABLE_NAME + " (name,size,owner,permission) VALUES ('" + name + "','" + size + " ','" + owner + "','" + permission + "')";
             stmt.executeUpdate(sql);
@@ -131,6 +126,19 @@ public class CatalogDAO {
         }
         return new MsgContainer(null, "OK");
 
+    }
+
+    private int getIDFromUser(String username){
+        try{
+            getIDFromUserStmt.setString(1, username);
+            ResultSet user = getIDFromUserStmt.executeQuery();
+            user.next();
+            int id  = user.getInt(1);
+            return id;
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     private String getUserFromID(int id){
@@ -146,10 +154,24 @@ public class CatalogDAO {
         return null;
     }
 
+    public FileDTO downloadFileWithID(int id){
+        try{
+            getFileWithIDStmt.setInt(1, id);
+            ResultSet file = getFileWithIDStmt.executeQuery();
+            file.next();
+            String name = file.getString(1);
+            int size = file.getInt(2);
+            int owner = getIDFromUser(file.getString(3));
+            int permission = file.getInt(4);
+            return new File(name, size, owner, permission);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public void logoutUser(int id){
         userMap.remove(id);
-        System.out.println("user with id: "+ id +" logged out.");
     }
 
     private void preparedStatements() throws SQLException{
@@ -157,7 +179,9 @@ public class CatalogDAO {
         findAllPersonsStmt = connection.prepareStatement("SELECT * from "+ ACCOUNT_TABLE_NAME );
         verifyUserStmt = connection.prepareStatement("SELECT ID from "+ ACCOUNT_TABLE_NAME +" WHERE username = ? AND password = ?");
         getUserFromIDStmt = connection.prepareStatement("SELECT username from "+ ACCOUNT_TABLE_NAME +" WHERE id = ?");
-        uploadFileStmt = connection.prepareStatement("INSERT INTO "+FILE_TABLE_NAME+" (name,size,owner,permission) VALUES (?,?,?,?)");
+        //uploadFileStmt = connection.prepareStatement("INSERT INTO "+FILE_TABLE_NAME+" (name,size,owner,permission) VALUES (?,?,?,?)");
         findAllFiles = connection.prepareStatement("SELECT * from "+FILE_TABLE_NAME);
+        getFileWithIDStmt = connection.prepareStatement("SELECT * from "+FILE_TABLE_NAME+" WHERE ID = ?");
+        getIDFromUserStmt = connection.prepareStatement("SELECT ID from "+ACCOUNT_TABLE_NAME+ " WHERE username = ?");
     }
 }

@@ -1,6 +1,7 @@
 package client.view;
 
 import common.Catalog;
+import common.FileDTO;
 import common.MsgContainerDTO;
 import java.rmi.RemoteException;
 import java.util.Scanner;
@@ -21,15 +22,16 @@ public class View implements Runnable{
 
     public void run(){
         MsgContainerDTO container;
+        FileDTO file;
         while(receiveUserInput){
             if(MYID != 0){
-                System.out.println("AVAILABLE COMMANDS ----> GETUSERS, LOGOUT, UPLOAD, VIEW");
+                System.out.println("AVAILABLE COMMANDS ----> GETUSERS, LOGOUT, UPLOAD, DOWNLOAD, VIEW");
             }else{
                 System.out.println("AVAILABLE COMMANDS ----> NEWUSER, GETUSERS, LOGIN");
             }
             String userMsg = scan.nextLine();
             switch(userMsg){
-                
+
                 case "NEWUSER":
                     System.out.println("Enter new username: ");
                     String regname = scan.nextLine();
@@ -99,6 +101,33 @@ public class View implements Runnable{
                     }catch (RemoteException e){
                         e.printStackTrace();
                     }
+
+                case "DOWNLOAD":
+                    try {
+                        container = catalog.getAllFiles();
+                        System.out.println("Catalog Files");
+                        printToConsol.extractMessage(container);
+                    }catch(RemoteException e){
+                        e.printStackTrace();
+                    }
+                    System.out.println("enter the ID of the file to download...");
+                    int id = Integer.parseInt(scan.nextLine());
+                    try{
+                        file = catalog.downloadFileWithID(id);
+                        int command = printToConsol.optionsOnFile(file.writePermission(), file.getName(), file.getOwner(), MYID);
+                        if(command == 1){
+                            System.out.println("modifing file");
+                            //functionallity to modify file and push it to category
+                        }else if(command == 2){
+                            System.out.println("deleteing file");
+                            //function to delete file from category
+                        }else{
+                            System.out.println("Doing nothing with file");
+                        }
+                    }catch (RemoteException e){
+                        e.printStackTrace();
+                    }
+                    break;
             }
         }
     }
