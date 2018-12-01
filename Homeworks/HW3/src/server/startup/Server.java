@@ -14,9 +14,10 @@ public class Server {
         try {
             Server server = new Server();
             server.startRMI();
-            System.out.println("Category server started.");
+            System.out.println("Category server started.\n");
         } catch (RemoteException | MalformedURLException e) {
             System.err.println("Failed to start server.");
+            e.printStackTrace();
         }
     }
 
@@ -27,6 +28,6 @@ public class Server {
             LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
         }
         Controller controller = new Controller();
-        Naming.rebind("catalogDB", controller);
+        Naming.rebind("myRMI", controller);
     }
 }
