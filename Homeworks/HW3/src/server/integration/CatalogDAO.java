@@ -21,8 +21,9 @@ public class CatalogDAO {
     private PreparedStatement getUserFromIDStmt;
     private PreparedStatement getFileWithIDStmt;
     private PreparedStatement getIDFromUserStmt;
+    private PreparedStatement updateFileStmt;
+    private PreparedStatement deleteFileStmt;
     private ArrayList<String> data = new ArrayList<>();
-    private HashMap<Integer, String> userMap = new HashMap<>();
 
     public CatalogDAO(){
         connectToDatabase();
@@ -60,14 +61,6 @@ public class CatalogDAO {
                 String password = users.getString(3);
                 data.add("id = "+id+",  username = "+username+",  "+password);
             }
-            Set set = userMap.entrySet();
-            Iterator iterator = set.iterator();
-            System.out.println("List of ONLINE users");
-            while(iterator.hasNext()) {
-                Map.Entry mapEntry = (Map.Entry)iterator.next();
-                System.out.println("user: "+ mapEntry.getValue()+ " with ID: "+ mapEntry.getKey());
-            }
-
             return new MsgContainer(data, "OK");
         }catch (SQLException e){
             return new MsgContainer(null, "FAILED");
@@ -83,7 +76,6 @@ public class CatalogDAO {
             validInfo.next();
             int id = validInfo.getInt(1);
             data.add(""+id+"");
-            userMap.put(id, account.getUsername());
             return new MsgContainer(data, "VALID");
         }catch (SQLException e){
             return new MsgContainer(null, "NOTVALID");
@@ -128,6 +120,16 @@ public class CatalogDAO {
 
     }
 
+    public void updateFile(String fileName, int newSize){
+        try {
+            updateFileStmt.setInt(1, newSize);
+            updateFileStmt.setString(2, fileName);
+            updateFileStmt.executeUpdate();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
     private int getIDFromUser(String username){
         try{
             getIDFromUserStmt.setString(1, username);
@@ -141,7 +143,7 @@ public class CatalogDAO {
         return 0;
     }
 
-    private String getUserFromID(int id){
+    public String getUserFromID(int id){
         try{
             getUserFromIDStmt.setInt(1, id);
             ResultSet user = getUserFromIDStmt.executeQuery();
@@ -152,6 +154,15 @@ public class CatalogDAO {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void deleteFile(String fileName){
+        try {
+            deleteFileStmt.setString(1, fileName);
+            deleteFileStmt.executeUpdate();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     public FileDTO downloadFileWithID(int id){
@@ -169,11 +180,6 @@ public class CatalogDAO {
         }
         return null;
     }
-
-    public void logoutUser(int id){
-        userMap.remove(id);
-    }
-
     private void preparedStatements() throws SQLException{
         createPersonStmt = connection.prepareStatement("INSERT INTO "+ACCOUNT_TABLE_NAME +" (username,password)  VALUES (?, ?)");
         findAllPersonsStmt = connection.prepareStatement("SELECT * from "+ ACCOUNT_TABLE_NAME );
@@ -183,5 +189,7 @@ public class CatalogDAO {
         findAllFiles = connection.prepareStatement("SELECT * from "+FILE_TABLE_NAME);
         getFileWithIDStmt = connection.prepareStatement("SELECT * from "+FILE_TABLE_NAME+" WHERE ID = ?");
         getIDFromUserStmt = connection.prepareStatement("SELECT ID from "+ACCOUNT_TABLE_NAME+ " WHERE username = ?");
+        updateFileStmt = connection.prepareStatement("UPDATE "+FILE_TABLE_NAME+" SET size = ? WHERE name = ?");
+        deleteFileStmt = connection.prepareStatement("DELETE FROM "+FILE_TABLE_NAME +" WHERE name = ?");
     }
 }
