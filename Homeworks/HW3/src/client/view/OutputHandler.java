@@ -11,7 +11,7 @@ public class OutputHandler extends UnicastRemoteObject implements ClientOutput {
         super();
     }
 
-    void println(String output) {
+    synchronized void println(String output) {
         System.out.println(output);
     }
 

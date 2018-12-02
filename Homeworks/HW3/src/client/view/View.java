@@ -3,7 +3,6 @@ package client.view;
 import common.AccountDTO;
 import common.Catalog;
 import common.FileDTO;
-
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -87,7 +86,7 @@ public class View implements Runnable{
                         outputHandler.println("Catalog Files");
                         dataHandler.printFileData(fileContainer);
                     }catch (Exception e){
-                        e.printStackTrace();
+                        outputHandler.println("failed to retrieve files");
                     }
                     break;
                 case "DOWNLOAD":
@@ -97,7 +96,7 @@ public class View implements Runnable{
                         outputHandler.println("Catalog Files");
                         dataHandler.printFileData(fileContainer);
                     }catch(Exception e){
-                        e.printStackTrace();
+                        outputHandler.println("failed to retrieve files");
                     }
                     outputHandler.println("enter the name of the file to download...");
                     String fileName = scan.nextLine();
