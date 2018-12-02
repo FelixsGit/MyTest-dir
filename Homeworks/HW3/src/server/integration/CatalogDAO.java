@@ -71,12 +71,12 @@ public class CatalogDAO {
     public ArrayList<FileDTO> getAllFiles() throws FileException{
         data.clear();
         try {
-            ResultSet users = findAllFiles.executeQuery();
-            while (users.next()) {
-                String name = users.getString(1);
-                int size = users.getInt(2);
-                String owner = users.getString(3);
-                int permission = users.getInt(4);
+            ResultSet rs = findAllFiles.executeQuery();
+            while (rs.next()) {
+                String name = rs.getString(1);
+                int size = rs.getInt(2);
+                String owner = rs.getString(3);
+                int permission = rs.getInt(4);
                 File file = new File(name,size,owner,permission);
                 data.add(file);
             }

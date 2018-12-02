@@ -1,6 +1,5 @@
 package server.controller;
 
-import client.view.OutputHandler;
 import common.*;
 import server.integration.CatalogDAO;
 import server.model.Account;
@@ -45,7 +44,7 @@ public class Controller extends UnicastRemoteObject implements Catalog {
         }
         return null;
     }
-    public synchronized void logout(String username){
+    public void logout(String username){
         loggedInUsers.remove(username);
     }
 
@@ -82,7 +81,7 @@ public class Controller extends UnicastRemoteObject implements Catalog {
         try {
             catalogDAO.updateFile(fileName, newSize);
         }catch (FileException e){
-            throw new FileException("failed to delete file");
+            throw new FileException("failed to update file");
         }
     }
 
