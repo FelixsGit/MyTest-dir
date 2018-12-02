@@ -132,11 +132,10 @@ public class View implements Runnable{
                                 }
                             }
                         }else if(command == 2){
-                            outputHandler.println("deleteing file the file from Catalog....");
+                            outputHandler.println("deleting file the file from Catalog....");
                             catalog.deleteFile(MYID,file.getOwner(),file.getName());
                         }else if(command == 3){
                             outputHandler.println("keeping the file, and reading it");
-                            outputHandler.println("closing file....");
                         }else{
                             outputHandler.println("You only have permission to read the file");
                         }
