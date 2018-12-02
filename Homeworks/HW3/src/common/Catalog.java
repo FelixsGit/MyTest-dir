@@ -1,31 +1,32 @@
 package common;
 import client.view.OutputHandler;
+import server.model.AccountException;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 /**
  * specifies the servers remote methods
  */
 public interface Catalog extends Remote {
 
-    FileDTO downloadFileWithID(int id) throws RemoteException;
 
-    MsgContainerDTO createNewAccount(String name, String password) throws RemoteException;
+    void createNewAccount(String name, String password) throws Exception;
 
-    MsgContainerDTO getAllUsers() throws RemoteException;
+    AccountDTO login(String username, String password, ClientOutput clientOutput)throws Exception;
 
-    MsgContainerDTO getAllFiles() throws RemoteException;
+    ArrayList<FileDTO> getAllFiles() throws Exception;
 
-    MsgContainerDTO login(String username, String password, ClientOutput clientOutput)throws RemoteException;
+    void logout(String username)throws RemoteException;
 
-    void logout(int id)throws RemoteException;
+    void uploadFile(String name,  int size, String owner, int permission)throws Exception;
 
-    MsgContainerDTO uploadFile(String name,  int size, int id, int permission)throws RemoteException;
+    FileDTO downloadFileWithName(String fileName) throws Exception;
 
-    void deleteFile(int userID, int owner, String fileName) throws RemoteException;
+    void updateModifiedFile(String fileName, String owner, int newSize, String editorName)throws Exception;
 
-    void updateModifiedFile(int userID, int owner, int newSize, String fileName)throws RemoteException;
+    void deleteFile(String fileName, String owner, String editorName) throws Exception;
 
 }
 

@@ -1,8 +1,7 @@
 package client.view;
 
-import common.MsgContainerDTO;
-
-import java.util.LinkedList;
+import common.FileDTO;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 class DataHandler {
@@ -14,7 +13,7 @@ class DataHandler {
         this.outputHandler = outputHandler;
     }
 
-    int optionsOnFile(int permission, String fileName, int authorID, int myID){
+    int optionsOnFile(String fileName, String owner, int permission,  String myName){
         if(permission == 1){
             while(true) {
                 outputHandler.println("MODIFY, DELETE or KEEP file: " + fileName);
@@ -27,7 +26,8 @@ class DataHandler {
                     return 3;
                 }
             }
-        }else if(authorID == myID){
+        }
+        else if(owner.equals(myName)){
             while(true) {
                 outputHandler.println("MODIFY or DELETE or KEEP file: " + fileName);
                 String commandOnFile = scan.nextLine();
@@ -43,30 +43,10 @@ class DataHandler {
         return 0;
     }
 
-    int extractMessage(MsgContainerDTO msgContainer){
-        if(msgContainer.getStatus().equals("TAKEN")){
-            outputHandler.println("username already taken");
-        }else if(msgContainer.getStatus().equals("OK")) {
-            outputHandler.println("action complete");
-            LinkedList<String> container = msgContainer.getMsg();
-            for (int i = 0; i < container.size(); i++) {
-                outputHandler.println(container.get(i));
+    void printFileData(ArrayList<FileDTO> fileContainer){
+            for (int i = 0; i < fileContainer.size(); i++) {
+                FileDTO file = fileContainer.get(i);
+                outputHandler.println("name = "+file.getName()+", size = "+file.getSize()+", owner = "+file.getOwner()+", permission = "+file.getPermission());
             }
-            container.clear();
-        }else if(msgContainer.getStatus().equals("VALID")){
-            outputHandler.println("You are now logged in");
-            LinkedList<String> container = msgContainer.getMsg();
-            for (int i = 0; i < container.size(); i++) {
-                return Integer.parseInt(container.get(i));
-            }
-            container.clear();
-        }else if(msgContainer.getStatus().equals("NOTVALID")){
-            outputHandler.println("Wrong username or password");
-        }else if(msgContainer.getStatus().equals("ERROR")){
-            outputHandler.println("failed to create file");
-        }else if(msgContainer.getStatus().equals("NAMEERROR")){
-            outputHandler.println("File name already exisits");
-        }
-        return 0;
     }
 }

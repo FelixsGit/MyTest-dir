@@ -1,11 +1,8 @@
 package server.integration;
 
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
+import common.AccountDTO;
 import common.FileDTO;
-import common.MsgContainerDTO;
-import server.model.Account;
-import server.model.File;
-import server.model.MsgContainer;
+import server.model.*;
 import java.sql.*;
 import java.util.*;
 
@@ -15,15 +12,13 @@ public class CatalogDAO {
     private static final String ACCOUNT_TABLE_NAME = "accounts";
     private static final String FILE_TABLE_NAME = "files";
     private PreparedStatement createPersonStmt;
-    private PreparedStatement findAllPersonsStmt;
     private PreparedStatement verifyUserStmt;
+    private PreparedStatement uploadFileStmt;
     private PreparedStatement findAllFiles;
-    private PreparedStatement getUserFromIDStmt;
-    private PreparedStatement getFileWithIDStmt;
-    private PreparedStatement getIDFromUserStmt;
+    private PreparedStatement getFileWithNameStmt;
     private PreparedStatement updateFileStmt;
     private PreparedStatement deleteFileStmt;
-    private ArrayList<String> data = new ArrayList<>();
+    private ArrayList<FileDTO> data = new ArrayList<>();
 
     public CatalogDAO(){
         connectToDatabase();
@@ -38,51 +33,42 @@ public class CatalogDAO {
             System.out.println(e);
         }
     }
-
-    public MsgContainerDTO createAccount(Account account){
-        data.clear();
+    public void createAccount(Account accountToAdd) throws AccountException {
         try {
-            createPersonStmt.setString(1, account.getUsername());
-            createPersonStmt.setString(2, account.getPassword());
+            createPersonStmt.setString(1, accountToAdd.getUsername());
+            createPersonStmt.setString(2, accountToAdd.getPassword());
             createPersonStmt.executeUpdate();
-        }catch (SQLException e){
-            return new MsgContainer(null,"TAKEN");
-        }
-        return new MsgContainer(null, "OK");
-    }
-
-    public MsgContainerDTO getAllUsers() {
-        data.clear();
-        try {
-            ResultSet users = findAllPersonsStmt.executeQuery();
-            while (users.next()) {
-                int id = users.getInt(1);
-                String username = users.getString(2);
-                String password = users.getString(3);
-                data.add("id = "+id+",  username = "+username+",  "+password);
-            }
-            return new MsgContainer(data, "OK");
-        }catch (SQLException e){
-            return new MsgContainer(null, "FAILED");
+        } catch(SQLException e) {
+            throw new AccountException("Username already exists");
         }
     }
-
-    public MsgContainerDTO verifyUser(Account account){
-        data.clear();
+    public AccountDTO  verifyUser(Account account) throws AccountException{
         try{
             verifyUserStmt.setString(1, account.getUsername());
             verifyUserStmt.setString(2, account.getPassword());
-            ResultSet validInfo = verifyUserStmt.executeQuery();
-            validInfo.next();
-            int id = validInfo.getInt(1);
-            data.add(""+id+"");
-            return new MsgContainer(data, "VALID");
+            ResultSet rs = verifyUserStmt.executeQuery();
+            if(!rs.next()){
+                throw new AccountException("wrong username or password");
+            }
+            return new Account(account.getUsername(), account.getPassword());
         }catch (SQLException e){
-            return new MsgContainer(null, "NOTVALID");
+            e.printStackTrace();
         }
+        return null;
     }
+    public void uploadFile(File file) throws FileException {
+        try {
+            uploadFileStmt.setString(1, file.getName());
+            uploadFileStmt.setInt(2, file.getSize());
+            uploadFileStmt.setString(3, file.getOwner());
+            uploadFileStmt.setInt(4, file.getPermission());
+            uploadFileStmt.executeUpdate();
+        }catch (SQLException e){
+            throw new FileException("file with that name already exists");
+        }
 
-    public MsgContainerDTO getAllFiles(){
+    }
+    public ArrayList<FileDTO> getAllFiles() throws FileException{
         data.clear();
         try {
             ResultSet users = findAllFiles.executeQuery();
@@ -91,104 +77,59 @@ public class CatalogDAO {
                 int size = users.getInt(2);
                 String owner = users.getString(3);
                 int permission = users.getInt(4);
-                int id = users.getInt(5);
-                data.add(("id = "+id+", "+"name = " + name + ",  size = " + size + ",  owner =  " + owner+ ", permission = "+permission));
+                File file = new File(name,size,owner,permission);
+                data.add(file);
             }
-            return new MsgContainer(data,"OK");
+            return data;
         }catch (SQLException e){
-            return new MsgContainer(null, "FAILED");
+            throw new FileException("Failed to retrieve files");
         }
     }
 
-    public MsgContainerDTO uploadFile(File file){
-        data.clear();
-        try {
-            String name = file.getName();
-            int size = file.getSize();
-            String owner = getUserFromID(file.getOwner());
-            int permission = file.writePermission();
+    public FileDTO getFileWithName(String fileName) throws FileException{
+        try{
+            //getFileWithNameStmt.setString(1, fileName);
             Statement stmt = connection.createStatement();
-            String sql = "INSERT INTO " + FILE_TABLE_NAME + " (name,size,owner,permission) VALUES ('" + name + "','" + size + " ','" + owner + "','" + permission + "')";
-            stmt.executeUpdate(sql);
-        }catch (MySQLIntegrityConstraintViolationException e){
-            return  new MsgContainer(null, "NAMEERROR");
-        }catch (SQLException e){
-            e.printStackTrace();
-            return new MsgContainer(null,"ERROR");
-        }
-        return new MsgContainer(null, "OK");
-
-    }
-
-    public void updateFile(String fileName, int newSize){
-        try {
-            updateFileStmt.setInt(1, newSize);
-            updateFileStmt.setString(2, fileName);
-            updateFileStmt.executeUpdate();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
-    }
-
-    private int getIDFromUser(String username){
-        try{
-            getIDFromUserStmt.setString(1, username);
-            ResultSet user = getIDFromUserStmt.executeQuery();
-            user.next();
-            int id  = user.getInt(1);
-            return id;
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-    public String getUserFromID(int id){
-        try{
-            getUserFromIDStmt.setInt(1, id);
-            ResultSet user = getUserFromIDStmt.executeQuery();
-            user.next();
-            String username = user.getString(1);
-            return username;
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public void deleteFile(String fileName){
-        try {
-            deleteFileStmt.setString(1, fileName);
-            deleteFileStmt.executeUpdate();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
-    }
-
-    public FileDTO downloadFileWithID(int id){
-        try{
-            getFileWithIDStmt.setInt(1, id);
-            ResultSet file = getFileWithIDStmt.executeQuery();
-            file.next();
-            String name = file.getString(1);
-            int size = file.getInt(2);
-            int owner = getIDFromUser(file.getString(3));
-            int permission = file.getInt(4);
+            ResultSet rs = stmt.executeQuery("SELECT * from "+FILE_TABLE_NAME+" WHERE name = '"+fileName+"'");
+            if(!rs.next()){
+                throw new FileException("no file with that name found");
+            }
+            String name = rs.getString(1);
+            int size = rs.getInt(2);
+            String  owner = rs.getString(3);
+            int permission = rs.getInt(4);
             return new File(name, size, owner, permission);
         }catch (SQLException e){
             e.printStackTrace();
         }
         return null;
     }
+
+    public void updateFile(String fileName, int newSize) throws FileException{
+        try {
+            updateFileStmt.setInt(1, newSize);
+            updateFileStmt.setString(2, fileName);
+            updateFileStmt.executeUpdate();
+        }catch (SQLException e){
+            throw new FileException("failed to update file");
+        }
+    }
+
+    public void deleteFile(String fileName) throws FileException{
+        try {
+            deleteFileStmt.setString(1, fileName);
+            deleteFileStmt.executeUpdate();
+        }catch (SQLException e){
+            throw new FileException("failed to delete file");
+        }
+    }
+
     private void preparedStatements() throws SQLException{
         createPersonStmt = connection.prepareStatement("INSERT INTO "+ACCOUNT_TABLE_NAME +" (username,password)  VALUES (?, ?)");
-        findAllPersonsStmt = connection.prepareStatement("SELECT * from "+ ACCOUNT_TABLE_NAME );
-        verifyUserStmt = connection.prepareStatement("SELECT ID from "+ ACCOUNT_TABLE_NAME +" WHERE username = ? AND password = ?");
-        getUserFromIDStmt = connection.prepareStatement("SELECT username from "+ ACCOUNT_TABLE_NAME +" WHERE id = ?");
-        //uploadFileStmt = connection.prepareStatement("INSERT INTO "+FILE_TABLE_NAME+" (name,size,owner,permission) VALUES (?,?,?,?)");
+        verifyUserStmt = connection.prepareStatement("SELECT * from "+ ACCOUNT_TABLE_NAME +" WHERE username = ? AND password = ?");
+        uploadFileStmt = connection.prepareStatement("INSERT INTO "+FILE_TABLE_NAME+" (name,size,owner,permission) VALUES (?,?,?,?)");
         findAllFiles = connection.prepareStatement("SELECT * from "+FILE_TABLE_NAME);
-        getFileWithIDStmt = connection.prepareStatement("SELECT * from "+FILE_TABLE_NAME+" WHERE ID = ?");
-        getIDFromUserStmt = connection.prepareStatement("SELECT ID from "+ACCOUNT_TABLE_NAME+ " WHERE username = ?");
+        //getFileWithNameStmt = connection.prepareStatement("SELECT * from "+FILE_TABLE_NAME+" WHERE name = ?"); TODO
         updateFileStmt = connection.prepareStatement("UPDATE "+FILE_TABLE_NAME+" SET size = ? WHERE name = ?");
         deleteFileStmt = connection.prepareStatement("DELETE FROM "+FILE_TABLE_NAME +" WHERE name = ?");
     }

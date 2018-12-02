@@ -1,9 +1,11 @@
 package client.view;
 
+import common.AccountDTO;
 import common.Catalog;
 import common.FileDTO;
-import common.MsgContainerDTO;
+
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class View implements Runnable{
@@ -13,7 +15,7 @@ public class View implements Runnable{
     private Catalog catalog;
     private OutputHandler outputHandler;
     private DataHandler dataHandler;
-    private static int MYID ;
+    private AccountDTO account;
 
     public void start(Catalog catalog) throws RemoteException{
         this.catalog = catalog;
@@ -24,101 +26,85 @@ public class View implements Runnable{
     }
 
     public void run(){
-        MsgContainerDTO container;
-        FileDTO file;
         while(receiveUserInput){
-            if(MYID != 0){
+            if(account != null){
                 outputHandler.println("AVAILABLE COMMANDS ----> LOGOUT, UPLOAD, DOWNLOAD, VIEW");
             }else{
                 outputHandler.println("AVAILABLE COMMANDS ----> REGISTER, LOGIN");
             }
             String userMsg = scan.nextLine();
             switch(userMsg){
-
                 case "REGISTER":
                     outputHandler.println("Enter new username: ");
                     String regname = scan.nextLine();
                     outputHandler.println("Enter new password");
                     String regpass = scan.nextLine();
                     try {
-                        container = catalog.createNewAccount(regname, regpass);
-                        dataHandler.extractMessage(container);
-                    }catch(RemoteException e){
-                        e.printStackTrace();
+                        catalog.createNewAccount(regname, regpass);
+                    }catch(Exception e){
+                        outputHandler.println("username already taken!");
                     }
                     break;
-                /*
-                case "GETUSERS":
-                    try {
-                        container = catalog.getAllUsers();
-                        dataHandler.extractMessage(container);
-                        break;
-                    }catch (RemoteException e){
-                        e.printStackTrace();
-                    }
-                  */
                 case "LOGIN":
                     try{
                         outputHandler.println("Enter your username: ");
                         String username = scan.nextLine();
                         outputHandler.println("Enter your password");
                         String password = scan.nextLine();
-                        container = catalog.login(username, password, outputHandler);
-                        MYID = dataHandler.extractMessage(container);
-                        break;
-                    }catch (RemoteException e){
-                        e.printStackTrace();
+                        account = catalog.login(username, password, outputHandler);
+                        outputHandler.println("login successful");
+                    }catch (Exception e){
+                        outputHandler.println("wrong username or password");
                     }
-
+                    break;
                 case "LOGOUT":
                     try {
-                        catalog.logout(MYID);
-                        MYID = 0;
+                        catalog.logout(account.getUsername());
+                        account = null;
                         outputHandler.println("now offline");
-                        break;
                     }catch (RemoteException e){
                         e.printStackTrace();
                     }
-
+                    break;
                 case "UPLOAD":
-                    outputHandler.println("enter file name...");
-                    String filename = scan.nextLine();
-                    outputHandler.println("enter size of file...");
-                    int size = Integer.parseInt(scan.nextLine());
-                    outputHandler.println("enter read/write permissions, 0  for only you have access, 1 for all have access");
-                    int permission = Integer.parseInt(scan.nextLine());
                     try {
-                        container = catalog.uploadFile(filename, size, MYID, permission);
-                        dataHandler.extractMessage(container);
-                        break;
-                    }catch (RemoteException e){
-                        e.printStackTrace();
+                        outputHandler.println("enter file name...");
+                        String filename = scan.nextLine();
+                        outputHandler.println("enter size of file...");
+                        int size = Integer.parseInt(scan.nextLine());
+                        outputHandler.println("enter read/write permissions, 0  for only you have access, 1 for all have access");
+                        int permission = Integer.parseInt(scan.nextLine());
+                        catalog.uploadFile(filename,size,account.getUsername(),permission);
+                        outputHandler.println("file uploaded to catalog");
+                    }catch (Exception e){
+                        outputHandler.println("file with that name already exists");
                     }
-
+                    break;
                 case "VIEW":
                     try {
-                        container = catalog.getAllFiles();
+                        ArrayList<FileDTO> fileContainer;
+                        fileContainer = catalog.getAllFiles();
                         outputHandler.println("Catalog Files");
-                        dataHandler.extractMessage(container);
-                        break;
-                    }catch (RemoteException e){
+                        dataHandler.printFileData(fileContainer);
+                    }catch (Exception e){
                         e.printStackTrace();
                     }
-
+                    break;
                 case "DOWNLOAD":
                     try {
-                        container = catalog.getAllFiles();
+                        ArrayList<FileDTO> fileContainer;
+                        fileContainer = catalog.getAllFiles();
                         outputHandler.println("Catalog Files");
-                        dataHandler.extractMessage(container);
-                    }catch(RemoteException e){
+                        dataHandler.printFileData(fileContainer);
+                    }catch(Exception e){
                         e.printStackTrace();
                     }
-                    outputHandler.println("enter the ID of the file to download...");
-                    int id = Integer.parseInt(scan.nextLine());
+                    outputHandler.println("enter the name of the file to download...");
+                    String fileName = scan.nextLine();
                     try{
-                        file = catalog.downloadFileWithID(id);
+                        FileDTO file = catalog.downloadFileWithName(fileName);
                         outputHandler.printMessage("downloaded the file: "+ file.getName());
-                        int command = dataHandler.optionsOnFile(file.writePermission(), file.getName(), file.getOwner(), MYID);
+                        int command = dataHandler.optionsOnFile(file.getName(), file.getOwner(), file.getPermission(), account.getUsername());
                         if(command == 1){
                             outputHandler.println("modifying the file....");
                             while(true){
@@ -127,28 +113,31 @@ public class View implements Runnable{
                                 if(isNumeric(newSize)){
                                     int updatedSize = Integer.parseInt(newSize);
                                     outputHandler.println("saving the modified file to Catalog...");
-                                    catalog.updateModifiedFile(MYID, file.getOwner(),updatedSize, file.getName());
+                                    catalog.updateModifiedFile(file.getName(), file.getOwner(), updatedSize, account.getUsername());
                                     break;
                                 }
                             }
-                        }else if(command == 2){
+                        }
+                        else if(command == 2){
                             outputHandler.println("deleting file the file from Catalog....");
-                            catalog.deleteFile(MYID,file.getOwner(),file.getName());
+                            catalog.deleteFile(file.getName(), file.getOwner(), account.getUsername());
                         }else if(command == 3){
                             outputHandler.println("keeping the file, and reading it");
                         }else{
                             outputHandler.println("You only have permission to read the file");
                         }
-                    }catch (RemoteException e){
-                        e.printStackTrace();
+                    }catch (Exception e){
+                        outputHandler.println("no file with that name found");
                     }
                     break;
+
             }
         }
     }
-    public static boolean isNumeric(String str) {
+    private static boolean isNumeric(String str) {
         for (char c : str.toCharArray()) {
-            if (!Character.isDigit(c)) return false;
+            if (!Character.isDigit(c))
+                return false;
         }
         return true;
     }

@@ -15,11 +15,7 @@ public class OutputHandler extends UnicastRemoteObject implements ClientOutput {
         System.out.println(output);
     }
 
-    void print(String output) {
-        System.out.print(output);
-    }
-
-    synchronized public void printMessage(String message)throws RemoteException{
+    synchronized public void printMessage(String message){
         System.out.println("Server: "+ message);
     }
 }
