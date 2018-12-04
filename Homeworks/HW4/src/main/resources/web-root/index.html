@@ -2,9 +2,37 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Currency Converter</title>
+    <link rel = "stylesheet" type = "text/css" href = "resources/css/reset.css"/>
+    <link rel = "stylesheet" type = "text/css" href = "resources/css/currencyConverter.css"/>
+    <link href = "https://fonts.googleapis.com/css?family=Roboto Condensed" rel = "stylesheet"/>
 </head>
 <body>
-    <h1>SUP</h1>
+    <div class = "welcome"> Currency Converter</div>
+    <div class = "value">
+        <form action="/action_page.php">From<br>
+            <select name="currency">
+                <option value="SEK">SEK</option>
+                <option value="DOLLAR">Dollar</option>
+                <option value="EURO">Euro</option>
+                <option value="POUND">Pound</option>
+            </select>
+        </form>
+        <form action="/action_page.php">To<br>
+            <select name="currency">
+                <option value="SEK">SEK</option>
+                <option value="DOLLAR">Dollar</option>
+                <option value="EURO">Euro</option>
+                <option value="POUND">Pound</option>
+            </select>
+            <br>
+            <form>
+                Amount<br>
+                <input type="text" name="value"><br>
+            </form>
+            <input type="submit" value="Submit">
+
+        </form>
+    </div>
 </body>
 </html>
