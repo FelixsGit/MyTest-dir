@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Handling Form Submission</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel = "stylesheet" type = "text/css" href = "resources/css/reset.css"/>
+    <link rel = "stylesheet" type = "text/css" href = "resources/css/currencyConverter.css"/>
+    <link href='https://fonts.googleapis.com/css?family=Cabin' rel='stylesheet'>
+    <style>
+body {
+    font-family: 'Cabin';font-size: 22px;
+}
+</style>
+</head>
+<body>
+<div class = "welcome"> Currency Converter</div>
+<div class = "calculate">
+    <form action="#" th:action="@{/conversion}" th:object="${conversion}" method="post">
+        <p>From currency:
+            <br>
+            <input type="text" th:field="*{fromCurrency}" />
+        </p>
+        <p>To currency:
+            <br>
+            <input type="text" th:field="*{toCurrency}" />
+        </p>
+        <p>Amount to convert:
+            <br>
+            <input type="text" th:field="*{amount}" />
+        </p>
+        <p>
+            <br>
+            <input type="submit" value="Submit" />
+        </p>
+    </form>
+</div>
+</body>
+</html>

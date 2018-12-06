@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package currencyConverter.config;
+package currency_converter.config;
 
 import nz.net.ultraq.thymeleaf.LayoutDialect;
 import org.springframework.context.ApplicationContext;
@@ -38,6 +38,7 @@ import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 
+
 /**
  * Loads all configuration for the entire bank web app. Note that there are
  * config settings also in the file <code>application.properties</code>.
@@ -46,7 +47,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 // repositories.
 @EnableWebMvc
 @Configuration
-public class currencyConverterConfig implements WebMvcConfigurer, ApplicationContextAware {
+public class CurrencyConverterConfig implements WebMvcConfigurer, ApplicationContextAware {
     private ApplicationContext applicationContext;
 
     /**
@@ -72,6 +73,7 @@ public class currencyConverterConfig implements WebMvcConfigurer, ApplicationCon
         viewResolver.setTemplateEngine(templateEngine());
         return viewResolver;
     }
+
 
     /**
      * Create a <code>org.thymeleaf.ITemplateEngine</code> bean that manages
@@ -122,10 +124,10 @@ public class currencyConverterConfig implements WebMvcConfigurer, ApplicationCon
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         int cachePeriodForStaticFilesInSecs = 1;
         String rootDirForStaticFiles = "classpath:/web-root/";
-
         registry.addResourceHandler("/**")
                 .addResourceLocations(rootDirForStaticFiles)
                 .setCachePeriod(cachePeriodForStaticFilesInSecs)
                 .resourceChain(true).addResolver(new PathResourceResolver());
     }
+
 }
