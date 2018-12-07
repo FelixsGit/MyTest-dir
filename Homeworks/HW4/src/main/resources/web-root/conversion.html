@@ -15,6 +15,7 @@ body {
 <body>
 <div class = "welcome"> Currency Converter</div>
 <div class = "calculate">
+
     <form action="#" th:action="@{/conversion}" th:object="${conversion}" method="post">
         <p>From currency:
             <br>
@@ -33,6 +34,8 @@ body {
             <input type="submit" value="Submit" />
         </p>
     </form>
+
+
 </div>
 </body>
 </html>

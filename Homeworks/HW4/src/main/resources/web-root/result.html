@@ -15,10 +15,10 @@ body {
 <body>
 <div class = "welcome"> Currency Converter</div>
     <div class = "calculate">
-        <h1>Result</h1>
         <p th:text="'From currency: ' + ${conversion.fromCurrency}" />
         <p th:text="'To currency: ' + ${conversion.toCurrency}" />
-        <p th:text="'Value: ' + ${conversion.amount}" />
+        <p th:text="'Input: ' + ${conversion.amount}" />
+        <p th:text="'Result: ' + ${conversion.amountAfter}" />
         <a href="/conversion">Make another conversion</a>
     </div>
 </body>

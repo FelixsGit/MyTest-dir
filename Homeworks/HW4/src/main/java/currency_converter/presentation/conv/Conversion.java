@@ -7,6 +7,7 @@ public class Conversion {
     private String fromCurrency;
     private String toCurrency;
     private double amount;
+    private double amountAfter;
 
     public String getFromCurrency() {
         return fromCurrency;
@@ -30,6 +31,13 @@ public class Conversion {
 
     public void setAmount(double amount) {
         this.amount = amount;
+    }
+    public double getAmountAfter(){
+        return amountAfter;
+    }
+
+    public void setAmountAfter(double amountAfter){
+        this.amountAfter = amountAfter;
     }
     @Override
     public String toString() {

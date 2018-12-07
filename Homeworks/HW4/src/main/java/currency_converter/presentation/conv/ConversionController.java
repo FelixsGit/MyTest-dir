@@ -41,7 +41,9 @@ public class ConversionController {
         else{
             convertedAmount = currentConversionRates.getToeuro() * conversion.getAmount();
         }
-        conversion.setAmount(convertedAmount);
+        conversion.setAmountAfter(convertedAmount);
         return "result";
     }
+
+
 }
