@@ -19,17 +19,17 @@ body {
         <p>From</p>
         <select th:field="*{fromCurrency}">
             <option th:value="SEK" th:text="SEK"></option>
-            <option th:value="DOLLAR" th:text="USD"></option>
-            <option th:value="EURO" th:text="EUR"></option>
-            <option th:value="POUND" th:text="GBP"></option>
+            <option th:value="USD" th:text="USD"></option>
+            <option th:value="EUR" th:text="EUR"></option>
+            <option th:value="GBP" th:text="GBP"></option>
         </select>
         <br>
         <p>To</p>
         <select th:field="*{toCurrency}">
             <option th:value="SEK" th:text="SEK"></option>
-            <option th:value="DOLLAR" th:text="USD"></option>
-            <option th:value="EURO" th:text="EUR"></option>
-            <option th:value="POUND" th:text="GBP"></option>
+            <option th:value="USD" th:text="USD"></option>
+            <option th:value="EUR" th:text="EUR"></option>
+            <option th:value="GBP" th:text="GBP"></option>
         </select>
         <p>Amount</p>
             <input type="text" th:field="*{amount}" />

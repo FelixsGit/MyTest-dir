@@ -37,10 +37,10 @@ public class ConversionController {
         if(conversion.getToCurrency().equals("SEK")){
             convertedAmount = currentConversionRates.getTosek() * conversion.getAmount();
         }
-        else if(conversion.getToCurrency().equals("DOLLAR")){
+        else if(conversion.getToCurrency().equals("USD")){
             convertedAmount = currentConversionRates.getTodollar() * conversion.getAmount();
         }
-        else if(conversion.getToCurrency().equals("POUND")){
+        else if(conversion.getToCurrency().equals("GBP")){
             convertedAmount = currentConversionRates.getTopound() * conversion.getAmount();
         }
         else{
