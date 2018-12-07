@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Getting Started: Handling Form Submission</title>
+    <title>Currency Converter</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel = "stylesheet" type = "text/css" href = "resources/css/reset.css"/>
     <link rel = "stylesheet" type = "text/css" href = "resources/css/currencyConverter.css"/>
@@ -15,26 +15,32 @@ body {
 <body>
 <div class = "welcome"> Currency Converter</div>
 <div class = "calculate">
-
     <form action="#" th:action="@{/conversion}" th:object="${conversion}" method="post">
-        <p>From currency:
-            <br>
-            <input type="text" th:field="*{fromCurrency}" />
-        </p>
-        <p>To currency:
-            <br>
-            <input type="text" th:field="*{toCurrency}" />
-        </p>
-        <p>Amount to convert:
-            <br>
+        <p>From</p>
+        <select th:field="*{fromCurrency}">
+            <option th:value="SEK" th:text="SEK"></option>
+            <option th:value="DOLLAR" th:text="USD"></option>
+            <option th:value="EURO" th:text="EUR"></option>
+            <option th:value="POUND" th:text="GBP"></option>
+        </select>
+        <br>
+        <p>To</p>
+        <select th:field="*{toCurrency}">
+            <option th:value="SEK" th:text="SEK"></option>
+            <option th:value="DOLLAR" th:text="USD"></option>
+            <option th:value="EURO" th:text="EUR"></option>
+            <option th:value="POUND" th:text="GBP"></option>
+        </select>
+        <p>Amount</p>
             <input type="text" th:field="*{amount}" />
-        </p>
-        <p>
-            <br>
-            <input type="submit" value="Submit" />
-        </p>
+        <br>
+        <input type="submit" value="Convert" />
+        <br>
+        <span class="error"
+              th:if="${#fields.hasErrors('amount')}"
+              th:errors="*{amount}"></span>
     </form>
-
+    <br>
 
 </div>
 </body>

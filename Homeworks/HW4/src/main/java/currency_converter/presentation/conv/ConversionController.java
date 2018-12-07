@@ -4,11 +4,14 @@ import currency_converter.application.CurrencyConverterService;
 import currency_converter.domain.RatesDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import javax.validation.Valid;
+import java.text.DecimalFormat;
 
 @Controller
 @Scope("session")
@@ -25,8 +28,10 @@ public class ConversionController {
     }
 
     @PostMapping("/conversion")
-    public String conversionSubmit(@ModelAttribute Conversion conversion) {
-        System.out.println(conversion.toString());
+    public String conversionSubmit(@Valid @ModelAttribute Conversion conversion, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "conversion";
+        }
         currentConversionRates = service.findRates(conversion.getFromCurrency());
         double convertedAmount;
         if(conversion.getToCurrency().equals("SEK")){
@@ -41,7 +46,9 @@ public class ConversionController {
         else{
             convertedAmount = currentConversionRates.getToeuro() * conversion.getAmount();
         }
-        conversion.setAmountAfter(convertedAmount);
+        DecimalFormat numberFormat = new DecimalFormat("#.0000");
+        String amountToReturn = numberFormat.format(convertedAmount);
+        conversion.setAmountAfter(amountToReturn);
         return "result";
     }
 

@@ -2,12 +2,18 @@ package currency_converter.presentation.conv;
 
 import currency_converter.util.Util;
 
+import javax.validation.constraints.*;
+
 public class Conversion {
 
     private String fromCurrency;
     private String toCurrency;
+
+    @NotNull(message = "please enter a value to convert")
+    @Positive(message = "value must be greater than zero")
     private double amount;
-    private double amountAfter;
+
+    private String amountAfter;
 
     public String getFromCurrency() {
         return fromCurrency;
@@ -32,11 +38,11 @@ public class Conversion {
     public void setAmount(double amount) {
         this.amount = amount;
     }
-    public double getAmountAfter(){
+    public String getAmountAfter(){
         return amountAfter;
     }
 
-    public void setAmountAfter(double amountAfter){
+    public void setAmountAfter(String amountAfter){
         this.amountAfter = amountAfter;
     }
     @Override
