@@ -11,6 +11,39 @@
    transform: translate(-50%,-50%);
  }
 
+ .admin {
+     font-size: 45px;
+    position:absolute;
+    top:33%;
+    left:50%;
+    padding:15px;
+    -ms-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%);
+  }
+
+   .adminNumber {
+       font-size: 20px;
+      position:absolute;
+      top:45%;
+      left:50%;
+      padding:15px;
+      -ms-transform: translateX(-50%) translateY(-50%);
+      -webkit-transform: translate(-50%,-50%);
+      transform: translate(-50%,-50%);
+    }
+
+      .adminCalculate {
+           font-size: 15px;
+          position:absolute;
+          top:72%;
+          left:50%;
+          padding:15px;
+          -ms-transform: translateX(-50%) translateY(-50%);
+          -webkit-transform: translate(-50%,-50%);
+          transform: translate(-50%,-50%);
+        }
+
  .error{
     color: red;
     font-size: 80%;

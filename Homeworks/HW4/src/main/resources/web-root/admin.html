@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Currency Converter</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel = "stylesheet" type = "text/css" href = "resources/css/reset.css"/>
+    <link rel = "stylesheet" type = "text/css" href = "resources/css/currencyConverter.css"/>
+    <link href='https://fonts.googleapis.com/css?family=Cabin' rel='stylesheet'>
+    <style>
+body {
+    font-family: 'Cabin';font-size: 22px;
+}
+</style>
+</head>
+<body>
+<div class = "welcome"> Currency Converter</div>
+<a href="/conversion">Go to converter</a>
+<h1 class = "admin">Admin</h1>
+
+<div class = "adminNumber">
+    <p th:text="'Number of conversions made: ' + ${numberOfConversions.conversions}"/>
+    <br>
+    <p>Update currency rates</p>
+</div>
+
+<div class = "adminCalculate">
+    <form action="#" th:action="@{/admin}" th:object="${admin}" method="post">
+        <p>From</p>
+        <select th:field="*{fromCurrency}">
+            <option th:value="SEK" th:text="SEK"></option>
+            <option th:value="USD" th:text="USD"></option>
+            <option th:value="EUR" th:text="EUR"></option>
+            <option th:value="GBP" th:text="GBP"></option>
+        </select>
+        <br>
+        <p>To SEK</p>
+        <input type="text" th:field="*{tosek}"/>
+        <span class="error"
+              th:if="${#fields.hasErrors('tosek')}"
+              th:errors="*{tosek}">
+        </span>
+        <p>To USD</p>
+        <input type="text" th:field="*{todollar}" />
+        <span class="error"
+              th:if="${#fields.hasErrors('todollar')}"
+              th:errors="*{todollar}">
+        </span>
+        <p>To GBP</p>
+        <input type="text" th:field="*{topound}" />
+        <span class="error"
+              th:if="${#fields.hasErrors('topound')}"
+              th:errors="*{topound}">
+        </span>
+        <p>To EUR</p>
+        <input type="text" th:field="*{toeuro}" />
+        <span class="error"
+              th:if="${#fields.hasErrors('toeuro')}"
+              th:errors="*{toeuro}">
+        </span>
+        <br>
+        <br>
+        <input type="submit" value="Update" />
+    </form>
+    <br>
+</div>
+</body>
+</html>

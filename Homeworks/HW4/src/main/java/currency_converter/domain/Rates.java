@@ -57,4 +57,24 @@ public class Rates implements RatesDTO {
     public String getCurrency() {
         return currency;
     }
+
+    public void setTosek(double tosek) {
+        this.tosek = tosek;
+    }
+
+    public void setTodollar(double todollar) {
+        this.todollar = todollar;
+    }
+
+    public void setTopound(double topound) {
+        this.topound = topound;
+    }
+
+    public void setToeuro(double toeuro) {
+        this.toeuro = toeuro;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
 }
