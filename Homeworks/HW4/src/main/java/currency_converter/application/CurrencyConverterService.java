@@ -43,7 +43,7 @@ public class CurrencyConverterService {
         rates.setTosek(admin.getTosek());
 
         //because of dependency in the db we have to update the other affected rows as well.
-        //TOTO change db structure by removing redundancy
+        //TODO change db structure by removing redundancy
         if(admin.getFromCurrency().equals("SEK")){
             rates= currencyRateRepository.findByCurrency("SEK");
             rates.setTosek(1/admin.getTosek());
