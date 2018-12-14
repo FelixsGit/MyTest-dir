@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>se.kth.id1212</groupId>
-    <artifactId>appserv-spring</artifactId>
+    <groupId>HW4</groupId>
+    <artifactId>currency_converter</artifactId>
     <version>2.0</version>
 
     <packaging>jar</packaging>
