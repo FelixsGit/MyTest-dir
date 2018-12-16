@@ -1,5 +1,5 @@
-package server.model;
-import common.MessageDTO;
+package toppar.hangman_game.server.model;
+import toppar.hangman_game.common.MessageDTO;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -11,7 +11,7 @@ import java.util.Scanner;
 public class HangmanGame{
 
     private String word;
-    File f = new File("src/server/resources/words.txt");
+    File file = new File("src/toppar/hangman_game/server/resources/words.txt");
     private char[] charWord;
     private String[] uniqueGuesses;
     private boolean letterGuess;
@@ -29,12 +29,13 @@ public class HangmanGame{
     private int score;
 
     public MessageDTO newGame() throws FileNotFoundException {
+        System.out.println("user: "+username+" started a new game");
         int numberOfWords = 0;
         Random r = new Random();
         int low = 0;
         int high = 51528;
         int result = r.nextInt(high - low) + low;
-        Scanner scan2 = new Scanner(f);
+        Scanner scan2 = new Scanner(file);
         scan2.useDelimiter("[^A-Za-z]");
         while (scan2.hasNextLine()) {
             numberOfWords++;
@@ -64,12 +65,10 @@ public class HangmanGame{
         return this.messageDTO;
     }
     public void changeUsername(String username){
-
         this.username = username;
     }
     public String getUsername()throws NullPointerException{
-
-        return messageDTO.getUsername();
+        return this.username;
     }
     public MessageDTO makeGuess(String guess){
         this.messageDTO.setGameStatus("Running");

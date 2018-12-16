@@ -4,16 +4,8 @@
     android:orientation="vertical">
 
     <TextView
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="50dp"
-        android:layout_marginBottom="20dp"
-        android:text="Here we play game"
-        android:textStyle="bold" />
-
-    <TextView
         android:id="@+id/responseTextViewUsername"
+        android:layout_marginTop="40dp"
         android:layout_width="300dp"
         android:layout_gravity="center"
         android:layout_height="wrap_content" />

@@ -1,13 +1,13 @@
-package client.net;
+package toppar.hangman_game.client.net;
 
-import common.Message;
-import common.MessageDTO;
-import common.MessageException;
+import toppar.hangman_game.common.Message;
+import toppar.hangman_game.common.MessageDTO;
+
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
-import static common.MsgType.QUIT;
+import static toppar.hangman_game.common.MsgType.QUIT;
 
 public class ServerConnection {
     private static final int TIMEOUT_HALF_HOUR = 1800000;

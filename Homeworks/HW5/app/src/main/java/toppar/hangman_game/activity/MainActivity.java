@@ -1,5 +1,6 @@
 package toppar.hangman_game.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +12,7 @@ import android.widget.TextView;
 import toppar.hangman_game.R;
 import toppar.hangman_game.service.ServerConnection;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     public static ServerConnection serverConnection;
 
@@ -59,8 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(ServerConnection serverConnection) {
-            if(serverConnection != null && serverConnection.getClientSocket() != null && serverConnection.getClientSocket().isConnected()){
-                ((TextView) findViewById(R.id.responseTextView)).setText("You have connected to the server successfully!");
+            if(serverConnection != null && serverConnection.getSocket() != null && serverConnection.getSocket().isConnected()){
                 Intent intent = new Intent(getApplicationContext(), UsernameActivity.class);
                 startActivity(intent);
             }
@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
                 if(serverConnection != null && serverConnection.getConnectionStatus() != null && !serverConnection.getConnectionStatus().isEmpty()){
                     ((TextView) findViewById(R.id.responseTextView)).setText("Connection Error: "+serverConnection.getConnectionStatus());
                 }
+                serverConnection = null;
             }
         }
     }

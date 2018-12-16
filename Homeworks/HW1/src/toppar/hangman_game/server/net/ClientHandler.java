@@ -1,13 +1,11 @@
-package server.net;
+package toppar.hangman_game.server.net;
 
-import common.Message;
-import common.MessageDTO;
-import server.model.HangmanGame;
-import server.model.ServerLogs;
+import toppar.hangman_game.common.Message;
+import toppar.hangman_game.common.MessageDTO;
+import toppar.hangman_game.server.model.HangmanGame;
+import toppar.hangman_game.server.model.ServerLogs;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,17 +21,17 @@ public class ClientHandler extends Thread{
     public ClientHandler(Socket clientSocket)throws IOException {
         this.clientSocket = clientSocket;
         connected = true;
-        fromClient = new ObjectInputStream(clientSocket.getInputStream());
         toClient = new ObjectOutputStream(clientSocket.getOutputStream());
+        fromClient = new ObjectInputStream(clientSocket.getInputStream());
     }
-    public void sendMessage(MessageDTO msg)throws IOException{
+    public void sendMessage(MessageDTO msg){
         try{
+            System.out.println("sending a new game-state to the user");
             toClient.writeObject(msg);
             toClient.reset();
             toClient.flush();
-
         }catch (IOException e){
-            System.err.println("Could not write msg to client");
+            System.err.println("Could not write msg to toppar.hangman_game.client");
         }
     }
     public void run(){
@@ -41,6 +39,7 @@ public class ClientHandler extends Thread{
         while(connected){
             try{
                 Message msg = (Message)fromClient.readObject();
+                System.out.println("message received " + msg.getType().toString());
                 String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
                 switch(msg.getType()){
                     case USERNAME:

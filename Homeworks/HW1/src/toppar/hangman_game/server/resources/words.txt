@@ -14928,7 +14928,7 @@ clewing
 click
 clicked
 clicking
-client
+toppar.hangman_game.client
 clientèle
 cliff
 cliffhanger
@@ -15490,7 +15490,7 @@ committing
 commode
 commodity
 commodore
-common
+toppar.hangman_game.common
 commoner
 commonest
 commonly
@@ -42006,7 +42006,7 @@ serum
 servant
 serve
 served
-server
+toppar.hangman_game.server
 service
 serviceable
 serviced

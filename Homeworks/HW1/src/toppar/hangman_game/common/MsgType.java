@@ -1,9 +1,9 @@
-package common;
+package toppar.hangman_game.common;
 
 public enum MsgType {
 
     /*
-    From client
+    From toppar.hangman_game.client
      */
     USERNAME,
     GUESS,

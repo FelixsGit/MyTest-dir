@@ -1,13 +1,13 @@
-package client.view;
-import client.controller.Controller;
-import client.net.OutputHandler;
-import common.Message;
-import common.MessageDTO;
+package toppar.hangman_game.client.view;
+import toppar.hangman_game.client.controller.Controller;
+import toppar.hangman_game.client.net.OutputHandler;
+import toppar.hangman_game.common.Message;
+import toppar.hangman_game.common.MessageDTO;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import static common.MsgType.*;
+import static toppar.hangman_game.common.MsgType.*;
 
 public class View {
 

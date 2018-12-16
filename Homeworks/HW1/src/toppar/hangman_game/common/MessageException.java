@@ -1,4 +1,4 @@
-package common;
+package toppar.hangman_game.common;
 
 public class MessageException extends Exception {
 

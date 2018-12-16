@@ -1,4 +1,4 @@
-package server.net;
+package toppar.hangman_game.server.net;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -23,10 +23,11 @@ public class HangmanServer {
             }
         } catch (IOException e) {
             System.err.println("Server failure.");
+            e.printStackTrace();
         }
     }
     private void startHandler(Socket clientSocket) throws IOException{
-        System.out.println("A new user with address: "+clientSocket.getInetAddress()+ " connected to the hangman server");
+        System.out.println("A new user with address: "+clientSocket.getInetAddress()+ " connected to the hangman toppar.hangman_game.server");
         clientSocket.setSoLinger(true, LINGER_TIME);
         clientSocket.setSoTimeout(TIMEOUT_HALF_HOUR);
         ClientHandler handler = new ClientHandler(clientSocket);

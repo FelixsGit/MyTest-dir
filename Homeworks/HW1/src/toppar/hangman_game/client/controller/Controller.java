@@ -1,7 +1,7 @@
-package client.controller;
-import client.net.OutputHandler;
-import client.net.ServerConnection;
-import common.Message;
+package toppar.hangman_game.client.controller;
+import toppar.hangman_game.client.net.OutputHandler;
+import toppar.hangman_game.client.net.ServerConnection;
+import toppar.hangman_game.common.Message;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;

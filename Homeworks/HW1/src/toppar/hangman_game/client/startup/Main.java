@@ -1,5 +1,5 @@
-package client.startup;
-import client.view.View;
+package toppar.hangman_game.client.startup;
+import toppar.hangman_game.client.view.View;
 
 public class Main {
 

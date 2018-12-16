@@ -1,5 +1,6 @@
 package toppar.hangman_game.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,7 +10,7 @@ import android.widget.EditText;
 import toppar.hangman_game.R;
 
 
-public class UsernameActivity extends AppCompatActivity {
+public class UsernameActivity extends Activity {
 
     /**
      * This method is called when the user connects to the server

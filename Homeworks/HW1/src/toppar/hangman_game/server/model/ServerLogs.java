@@ -1,4 +1,4 @@
-package server.model;
+package toppar.hangman_game.server.model;
 
 import java.util.ArrayList;
 import java.util.Collections;

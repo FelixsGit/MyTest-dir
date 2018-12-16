@@ -1,4 +1,4 @@
-package common;
+package toppar.hangman_game.common;
 
 import java.io.Serializable;
 
