@@ -26,6 +26,7 @@ public class HangmanServer {
         }
     }
     private void startHandler(Socket clientSocket) throws IOException{
+        System.out.println("A new user with address: "+clientSocket.getInetAddress()+ " connected to the hangman server");
         clientSocket.setSoLinger(true, LINGER_TIME);
         clientSocket.setSoTimeout(TIMEOUT_HALF_HOUR);
         ClientHandler handler = new ClientHandler(clientSocket);
