@@ -1,13 +1,106 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/responseTextViewUsername"
-        android:layout_marginTop="40dp"
+        android:id="@+id/responseTextViewScore"
         android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         android:layout_gravity="center"
-        android:layout_height="wrap_content" />
+        android:layout_marginTop="20dp" />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/responseTextViewAttemptsLeft"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="40dp" />
+
+    <TextView
+        android:id="@+id/responseTextViewSTATE"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="70dp"
+        android:textSize="30dp" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="104dp"
+        android:layout_height="87dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="119dp"
+        android:layout_marginTop="115dp" />
+
+    <TextView
+        android:id="@+id/responseTextViewAttemptsUI"
+        android:layout_width="203dp"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/restartButton"
+        android:layout_gravity="center"
+        android:layout_marginTop="200dp"
+        android:textSize="30dp" />
+
+    <EditText
+        android:id="@+id/guessEditText"
+        android:layout_width="204dp"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/responseTextViewScore"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="center"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="252dp"
+        android:hint="Type guess here" />
+
+    <TextView
+        android:id="@+id/responseTextViewAttemptsGuessesMade"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="360dp" />
+
+    <Button
+        android:id="@+id/guessButton"
+        android:layout_width="205dp"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/restartButton"
+        android:layout_gravity="center"
+        android:layout_marginTop="300dp"
+        android:layout_marginEnd="-3dp"
+        android:baselineAligned="false"
+        android:text="Guess" />
+
+    <Button
+        android:id="@+id/quitButton"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="455dp"
+        android:layout_marginEnd="84dp"
+        android:layout_marginRight="84dp"
+        android:baselineAligned="false"
+        android:text="Quit" />
+
+    <Button
+        android:id="@+id/restartButton"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/quitButton"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="center"
+        android:layout_marginStart="-1dp"
+        android:layout_marginTop="406dp"
+        android:baselineAligned="false"
+        android:text="Restart" />
+
+</RelativeLayout>

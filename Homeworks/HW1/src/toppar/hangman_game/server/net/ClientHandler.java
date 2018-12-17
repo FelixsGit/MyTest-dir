@@ -26,7 +26,6 @@ public class ClientHandler extends Thread{
     }
     public void sendMessage(MessageDTO msg){
         try{
-            System.out.println("sending a new game-state to the user");
             toClient.writeObject(msg);
             toClient.reset();
             toClient.flush();
@@ -39,7 +38,6 @@ public class ClientHandler extends Thread{
         while(connected){
             try{
                 Message msg = (Message)fromClient.readObject();
-                System.out.println("message received " + msg.getType().toString());
                 String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
                 switch(msg.getType()){
                     case USERNAME:

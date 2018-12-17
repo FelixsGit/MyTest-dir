@@ -46,8 +46,8 @@ public class ServerConnection {
         }catch (NullPointerException e){
             System.err.println("Thanks for playing");
         }
-
     }
+
     @SuppressWarnings("InfiniteLoopStatement")
     private class Listener extends Thread{
 
