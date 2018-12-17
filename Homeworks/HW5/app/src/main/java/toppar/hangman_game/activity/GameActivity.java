@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import toppar.hangman_game.R;
 import toppar.hangman_game.common.Message;
@@ -73,8 +74,8 @@ public class GameActivity extends Activity {
                     restartButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ((TextView) findViewById(R.id.responseTextViewSTATE)).setText("");
                             sendRestart();
+                            ((TextView) findViewById(R.id.responseTextViewSTATE)).setText("");
                         }
                     });
                 }
@@ -87,6 +88,7 @@ public class GameActivity extends Activity {
     private class ConsoleOutput implements OutputHandler {
         @Override
         public void handleMessage(MessageDTO msg) {
+
             /**
              * In this method the user receives messages send from server
              *
@@ -104,17 +106,17 @@ public class GameActivity extends Activity {
                 }
                 ((TextView) findViewById(R.id.responseTextViewAttemptsGuessesMade)).setText("Guesses made: " + sb.toString());
             }else if(msg.getGameStatus().equals("won")){
-                gameState = msg.getGameStatus();
                 ((TextView) findViewById(R.id.responseTextViewScore)).setText("Your score: " + msg.getScore());
                 ((TextView) findViewById(R.id.responseTextViewAttemptsUI)).setText(msg.getCorrectUI());
                 ((TextView) findViewById(R.id.responseTextViewAttemptsLeft)).setText("Attempts left: " + msg.getTriesLeft());
                 ((TextView) findViewById(R.id.responseTextViewSTATE)).setText("YOU WON");
-            }else if(msg.getGameStatus().equals("lost")){
                 gameState = msg.getGameStatus();
+            }else if(msg.getGameStatus().equals("lost")){
                 ((TextView) findViewById(R.id.responseTextViewSTATE)).setText("YOU LOST");
                 ((TextView) findViewById(R.id.responseTextViewScore)).setText("Your score: " + msg.getScore());
                 ((TextView) findViewById(R.id.responseTextViewAttemptsLeft)).setText("Attempts left: " + msg.getTriesLeft());
                 ((TextView) findViewById(R.id.responseTextViewAttemptsUI)).setText(msg.getCorrectUI());
+                gameState = msg.getGameStatus();
             }
         }
     }

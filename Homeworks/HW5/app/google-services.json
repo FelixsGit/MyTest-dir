@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "120414859424",
+    "firebase_url": "https://hangman-63637.firebaseio.com",
+    "project_id": "hangman-63637",
+    "storage_bucket": "hangman-63637.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:120414859424:android:a98a70a719b647d2",
+        "android_client_info": {
+          "package_name": "toppar.hangman_game"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "120414859424-8bth1ts7a3dtf99lbsdehdr7uvn7i2eb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5RQ9QIrSS7uNDnRCT9-5DhNZCTuCxpMc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

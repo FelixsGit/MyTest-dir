@@ -67,7 +67,6 @@ public class MainActivity extends Activity {
                 if(serverConnection != null && serverConnection.getConnectionStatus() != null && !serverConnection.getConnectionStatus().isEmpty()){
                     ((TextView) findViewById(R.id.responseTextView)).setText("Connection Error: "+serverConnection.getConnectionStatus());
                 }
-                serverConnection = null;
             }
         }
     }
