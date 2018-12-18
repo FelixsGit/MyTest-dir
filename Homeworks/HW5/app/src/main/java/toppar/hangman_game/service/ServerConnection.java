@@ -1,6 +1,7 @@
 package toppar.hangman_game.service;
 
 import android.os.Handler;
+import com.google.firebase.messaging.FirebaseMessagingService;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -12,7 +13,7 @@ import toppar.hangman_game.common.MessageDTO;
 import static toppar.hangman_game.common.MsgType.QUIT;
 
 
-public class ServerConnection {
+public class ServerConnection{
     private Socket socket;
     private String connectionStatus;
     private static final int TIMEOUT_HALF_MINUTE = 30000;
