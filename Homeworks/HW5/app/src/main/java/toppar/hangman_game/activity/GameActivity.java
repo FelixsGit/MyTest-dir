@@ -67,6 +67,7 @@ public class GameActivity extends Activity {
                         public void onClick(View v) {
                             sendQuit();
                             MainActivity.serverConnection = null;
+                            //finish() will work here aswell, it might even be better.
                             Intent intentNew = new Intent(GameActivity.this, MainActivity.class);
                             startActivity(intentNew);
                         }
